@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
+import {iif, Observable, of} from 'rxjs';
+import {debounceTime, filter, map, mergeMap, switchMap, tap} from 'rxjs/operators';
 
 export interface Backend {
   getAutocompleteValues(input: string): Observable<Array<string>>;
@@ -9,6 +10,8 @@ export interface Backend {
   providedIn: 'root'
 })
 export class Level6Service {
+
+  empty$: Observable<Array<string>> = of([]);
 
   constructor() {
   }
@@ -23,7 +26,8 @@ export class Level6Service {
    * </UL>
    */
   getAutocompleteList(inputObservable$: Observable<string>, backend: Backend): Observable<Array<string>> {
-    return null; // TODO
+    return inputObservable$.pipe(
+      debounceTime(500),
+      switchMap(v => iif(() => v.length > 1, backend.getAutocompleteValues(v), this.empty$)));
   }
-
 }

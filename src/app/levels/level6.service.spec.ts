@@ -27,7 +27,8 @@ describe('Level6Service', () => {
       let requestIndex = 0;
       return {
         getAutocompleteValues(input: string): Observable<Array<string>> {
-          const delayTime = requestIndex < delayForResponse.length ? delayForResponse[requestIndex] : delayForResponse[delayForResponse.length];
+          const delayTime = requestIndex < delayForResponse.length ? delayForResponse[requestIndex]
+            : delayForResponse[delayForResponse.length];
           requestIndex++;
           return backend.getAutocompleteValues(input).pipe(delay(delayTime), tap(() => console.log('backend call end for', input, 'with delay', delayTime)));
         }
@@ -38,7 +39,7 @@ describe('Level6Service', () => {
   it('getAutocompleteList - simple single value', fakeAsync(() => {
     const obs$ = service.getAutocompleteList(of('Alg'), backend);
     expect(obs$).toBeInstanceOf(Observable);
-    let actualValues = [];
+    const actualValues = [];
     let gotError = false;
     let gotComplete = false;
     obs$.subscribe(
@@ -59,7 +60,7 @@ describe('Level6Service', () => {
         {time: 2000, value: 'Cap'}
       ]), backend);
     expect(obs$).toBeInstanceOf(Observable);
-    let actualValues = [];
+    const actualValues = [];
     let gotError = false;
     let gotComplete = false;
     obs$.subscribe(
@@ -84,7 +85,7 @@ describe('Level6Service', () => {
         {time: 3000, value: 'G'}
       ]), backend);
     expect(obs$).toBeInstanceOf(Observable);
-    let actualValues = [];
+    const actualValues = [];
     let gotError = false;
     let gotComplete = false;
     obs$.subscribe(
@@ -92,7 +93,7 @@ describe('Level6Service', () => {
       e => gotError = true,
       () => gotComplete = true);
     flush();
-    expect(actualValues).toEqual([['Gacrux']]);
+    expect(actualValues).toEqual([[], [], ['Gacrux'], []]);
     expect(gotError).toBeFalsy('expecting no errors');
     expect(gotComplete).toBeTruthy('expecting a complete');
   }));
@@ -108,7 +109,7 @@ describe('Level6Service', () => {
         {time: 5000, value: 'Fo'},
       ]), backend);
     expect(obs$).toBeInstanceOf(Observable);
-    let actualValues = [];
+    const actualValues = [];
     let gotError = false;
     let gotComplete = false;
     obs$.subscribe(
@@ -116,7 +117,7 @@ describe('Level6Service', () => {
       e => gotError = true,
       () => gotComplete = true);
     flush();
-    expect(actualValues).toEqual([['Gacrux'], ['Fomalhaut']]);
+    expect(actualValues).toEqual([[], [], ['Gacrux'], [], [], ['Fomalhaut']]);
     expect(gotError).toBeFalsy('expecting no errors');
     expect(gotComplete).toBeTruthy('expecting a complete');
   }));
@@ -137,7 +138,7 @@ describe('Level6Service', () => {
         {time: 1400, value: 'Pro'},
       ]), backend);
     expect(obs$).toBeInstanceOf(Observable);
-    let actualValues = [];
+    const actualValues = [];
     let gotError = false;
     let gotComplete = false;
     obs$.subscribe(
@@ -158,7 +159,7 @@ describe('Level6Service', () => {
       ], 3000), backendWithDelays([2000, 500, 100000]));
     // meaning: the request for 'Bet' will come before the answer for 'Veg' is given back to the service
     expect(obs$).toBeInstanceOf(Observable);
-    let actualValues = [];
+    const actualValues = [];
     let gotError = false;
     let gotComplete = false;
     obs$.subscribe(

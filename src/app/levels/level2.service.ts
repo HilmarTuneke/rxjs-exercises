@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
+import {merge, Observable} from 'rxjs';
+import {concat} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class Level2Service {
    * the values from the input1 come before the values from input2.
    */
   sourceBasedOrder(input1$: Observable<string>, input2$: Observable<string>): Observable<string> {
-    return null; // TODO
+    return concat(input1$, input2$);
   }
 
   /**
@@ -22,7 +23,7 @@ export class Level2Service {
    * the values in the result are in the order of the time they are provided.
    */
   timeBasedOrder(input1$: Observable<string>, input2$: Observable<string>): Observable<string> {
-    return null; // TODO
+    return merge(input1$, input2$);
   }
 
 }

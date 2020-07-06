@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class Level3Service {
    * result as an array when it is available.
    */
   callTwoBackendsAndReturnTheCombinedResult(backend1$: Observable<string>, backend2$: Observable<number>): Observable<[string, number]> {
-    return null; // TODO
+    return combineLatest([backend1$, backend2$]);
   }
 
 }
