@@ -14,8 +14,6 @@ export class TodoService {
   ) {}
 
   getTodos(): Observable<Todo[]> {
-    // TODO get todos from /api/todos
-    return EMPTY;
+    return this.http.get<Todo[]>('/api/todos');
   }
-
 }
