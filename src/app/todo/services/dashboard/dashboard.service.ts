@@ -6,7 +6,7 @@ import { TodoService } from '../todo/todo.service';
 import { TodoWithUser } from './todo-with-user';
 import {Todo} from '../todo/todo';
 import {User} from '../user/user';
-import {concatMap, first, groupBy, last, map, mergeMap, reduce, tap, toArray} from 'rxjs/operators';
+import {concatMap, first, groupBy, last, map, mergeMap, reduce, share, tap, toArray} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -29,13 +29,13 @@ export class DashboardService {
   */
 
   getTodosWithUsers(): Observable<TodoWithUser[]> {
-    const todo$: Observable<Todo> = this.todoService.getTodos().pipe(concatMap(array => from(array)));
+    const todo$: Observable<Todo> = this.todoService.getTodos().pipe(concatMap(array => from(array)), share());
     const user$: Observable<User> = todo$.pipe(mergeMap(todo => this.getUser(todo.userId)));
     return zip(todo$, user$).pipe(map(([todo, user]) => ({todo, user})), toArray());
   }
 
   getTodosWithUsersSeveralCallsPerUser(): Observable<TodoWithUser[]> {
-    const todo$: Observable<Todo> = this.todoService.getTodos().pipe(concatMap(array => from(array)));
+    const todo$: Observable<Todo> = this.todoService.getTodos().pipe(concatMap(array => from(array)), share());
     const user$: Observable<User> = todo$.pipe(mergeMap(todo => iif(() => this.users.has(todo.userId),
       of(this.users.get(todo.userId)),
       this.userService.getUser(todo.userId).pipe(tap(user => this.users.set(user.id, user))))));
@@ -44,7 +44,7 @@ export class DashboardService {
 
   private getUser(userId: number): Observable<User> {
     if(!this.userObservables.has(userId)) {
-      this.userObservables.set(userId, this.userService.getUser(userId));
+      this.userObservables.set(userId, this.userService.getUser(userId).pipe(share()));
     }
     return this.userObservables.get(userId);
   }
